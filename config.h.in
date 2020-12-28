@@ -1,0 +1,7 @@
+#cmakedefine ARCH_AARCH64
+
+/* endianess 
+ * 0 : big endian
+ * 1 : little endian
+ */
+#cmakedefine ENDIANESS @ORDER@
