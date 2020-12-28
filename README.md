@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/piggypiggy/sm3-aarch64.svg?branch=master)](https://travis-ci.com/piggypiggy/sm3-aarch64)
+
 AArch64 implementation of Chinese SM3 Cryptographic Hash Algorithm. [ch](https://www.oscca.gov.cn/sca/xxgk/2010-12/17/1002389/files/302a3ada057c4a73830536d03e683110.pdf), [en](https://tools.ietf.org/html/draft-sca-cfrg-sm3-02). 
 
 ## implementation
