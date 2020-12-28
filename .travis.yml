@@ -1,0 +1,42 @@
+language: c
+
+matrix:
+  include:
+    - os: linux
+      dist: bionic
+      arch: arm64
+      compiler: gcc
+      env: 
+        - buildtype=-DCMAKE_BUILD_TYPE=Release
+        - sanitizer=-DUSE_ASAN=ON
+
+    - os: linux
+      dist: focal
+      arch: arm64
+      compiler: gcc
+      env: 
+        - buildtype=-DCMAKE_BUILD_TYPE=Release
+        - sanitizer=-DUSE_ASAN=ON
+
+    - os: linux
+      dist: focal
+      arch: arm64
+      compiler: clang
+      env: 
+        - buildtype=-DCMAKE_BUILD_TYPE=Debug
+        - sanitizer=-DUSE_ASAN=ON
+
+    - os: linux
+      dist: focal
+      arch: arm64
+      compiler: clang
+      env: 
+        - buildtype=-DCMAKE_BUILD_TYPE=Release
+        - sanitizer=-DUSE_ASAN=ON
+
+script:
+  - mkdir build
+  - cd build
+  - cmake $toolchain $buildtype $sanitizer ..
+  - make VERBOSE=1
+  - if [ -z "$CROSS" ]; then make test; fi
