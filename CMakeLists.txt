@@ -68,7 +68,10 @@ set(ENDIANESS "O.O") # config
 set(EXTRA_C_FLAGS -Wall -Wextra -pedantic)
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
     set(EXTRA_C_FLAGS ${EXTRA_C_FLAGS} -fomit-frame-pointer)
+else()
+    set(EXTRA_C_FLAGS ${EXTRA_C_FLAGS})
 endif()
+
 if(USE_ASAN)
     set(SANITIZER_FLAG -fsanitize=address)
     set(EXTRA_C_FLAGS ${EXTRA_C_FLAGS} ${SANITIZER_FLAG})
@@ -102,8 +105,8 @@ include_directories(${SM3_DIR}/)
 
 if(BUILD_STATIC)
     add_library(sm3_static STATIC ${sm3_src})
-    set_target_properties(sm3_static PROPERTIES COMPILE_FLAGS ${EXTRA_C_FLAGS})
     target_compile_definitions(sm3_static PRIVATE BUILD_STATIC)
+    target_compile_options(sm3_static PRIVATE ${EXTRA_C_FLAGS})
     target_link_libraries(sm3_static ${SANITIZER_FLAG})
     # output directory
     set_target_properties(sm3_static PROPERTIES
@@ -118,8 +121,8 @@ if(BUILD_SHARED)
     add_library(sm3_shared SHARED ${sm3_src})
     # PIC
     set_property(TARGET sm3_shared PROPERTY POSITION_INDEPENDENT_CODE 1)
-    set_target_properties(sm3_shared PROPERTIES COMPILE_FLAGS ${EXTRA_C_FLAGS})
     target_compile_definitions(sm3_shared PRIVATE BUILD_SHARED)
+    target_compile_options(sm3_shared PRIVATE ${EXTRA_C_FLAGS})
     target_link_libraries(sm3_shared ${SANITIZER_FLAG})
     # output directory
     set_target_properties(sm3_shared PROPERTIES
@@ -154,8 +157,8 @@ elseif(BUILD_SHARED)
     target_compile_definitions(sm3_bench PRIVATE BUILD_SHARED)
 endif()
 
-set_target_properties(sm3_bench PROPERTIES COMPILE_FLAGS ${EXTRA_C_FLAGS})
-target_link_libraries(sm3_bench ${bench_dep_lib})
+target_compile_options(sm3_bench PRIVATE ${EXTRA_C_FLAGS})
+target_link_libraries(sm3_bench ${bench_dep_lib} ${SANITIZER_FLAG})
 
 ################# BUILD TEST #################
 project(sm3_test LANGUAGES C)
@@ -178,15 +181,17 @@ elseif(BUILD_STATIC)
     target_compile_definitions(sm3_test PRIVATE BUILD_STATIC)
 endif()
 
-set_target_properties(sm3_test PROPERTIES COMPILE_FLAGS ${EXTRA_C_FLAGS})
-target_link_libraries(sm3_test ${test_dep_lib})
+target_compile_options(sm3_test PRIVATE ${EXTRA_C_FLAGS})
+target_link_libraries(sm3_test ${test_dep_lib} ${SANITIZER_FLAG})
 add_test(SM3_TEST sm3_test)
 
 ##########################################################
+set(BUILD_FLAGS CMAKE_C_FLAGS_${CMAKE_BUILD_TYPE})
+string(TOUPPER ${BUILD_FLAGS} BUILD_FLAGS)
 message("================ summary ================")
 message("os               : ${CMAKE_SYSTEM_NAME}")
 message("processor        : ${CMAKE_SYSTEM_PROCESSOR}")
 message("build type       : ${CMAKE_BUILD_TYPE}")
 message("C compiler       : ${CMAKE_C_COMPILER}")
-message("C compiler flags : ${CMAKE_C_FLAGS} ${EXTRA_C_FLAGS}")
+message("C compiler flags : ${CMAKE_C_FLAGS} ${${BUILD_FLAGS}} ${EXTRA_C_FLAGS}")
 message("assembler        : ${CMAKE_ASM_COMPILER}")
