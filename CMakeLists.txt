@@ -4,6 +4,7 @@ project(sm3-aarch64 LANGUAGES C ASM)
 
 option(BUILD_STATIC "build static library" ON)
 option(BUILD_SHARED "build shared library" ON)
+option(USE_ASAN "use AddressSanitizer" OFF)
 
 if(${BUILD_STATIC} STREQUAL "OFF")
     unset(${BUILD_STATIC})
@@ -64,9 +65,13 @@ endif()
 set(ENDIANESS "O.O") # config
 
 # compiler flags
-set(EXTRA_C_FLAGS "-Wall -Wextra -pedantic")
+set(EXTRA_C_FLAGS -Wall -Wextra -pedantic)
 if(CMAKE_BUILD_TYPE STREQUAL "Release")
-    set(EXTRA_C_FLAGS "${EXTRA_C_FLAGS} -fomit-frame-pointer")
+    set(EXTRA_C_FLAGS ${EXTRA_C_FLAGS} -fomit-frame-pointer)
+endif()
+if(USE_ASAN)
+    set(SANITIZER_FLAG -fsanitize=address)
+    set(EXTRA_C_FLAGS ${EXTRA_C_FLAGS} ${SANITIZER_FLAG})
 endif()
 
 set(SM3_DIR ${CMAKE_CURRENT_SOURCE_DIR})
@@ -96,10 +101,10 @@ set(sm3_src
 include_directories(${SM3_DIR}/)
 
 if(BUILD_STATIC)
-message("static")
     add_library(sm3_static STATIC ${sm3_src})
     set_target_properties(sm3_static PROPERTIES COMPILE_FLAGS ${EXTRA_C_FLAGS})
     target_compile_definitions(sm3_static PRIVATE BUILD_STATIC)
+    target_link_libraries(sm3_static ${SANITIZER_FLAG})
     # output directory
     set_target_properties(sm3_static PROPERTIES
                           ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY})
@@ -110,12 +115,12 @@ message("static")
 endif()
 
 if(BUILD_SHARED)
-message("sgared")
     add_library(sm3_shared SHARED ${sm3_src})
     # PIC
     set_property(TARGET sm3_shared PROPERTY POSITION_INDEPENDENT_CODE 1)
     set_target_properties(sm3_shared PROPERTIES COMPILE_FLAGS ${EXTRA_C_FLAGS})
     target_compile_definitions(sm3_shared PRIVATE BUILD_SHARED)
+    target_link_libraries(sm3_shared ${SANITIZER_FLAG})
     # output directory
     set_target_properties(sm3_shared PROPERTIES
                           LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_DIRECTORY})
