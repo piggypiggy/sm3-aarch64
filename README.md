@@ -3,7 +3,7 @@
 AArch64 implementation of Chinese SM3 Cryptographic Hash Algorithm. [ch](https://www.oscca.gov.cn/sca/xxgk/2010-12/17/1002389/files/302a3ada057c4a73830536d03e683110.pdf), [en](https://tools.ietf.org/html/draft-sca-cfrg-sm3-02). 
 
 ## implementation
-* message extension : Neon. 
+* message extension : Armv8 Neon. 
 * compression function : A64.
 
 ## build
@@ -11,7 +11,14 @@ AArch64 implementation of Chinese SM3 Cryptographic Hash Algorithm. [ch](https:/
     $ cd build
     $ cmake ..
     $ make -j
-    $ make test
+    $ make test  
+
+cross compile:  
+
+    $ mkdir build
+    $ cd build
+    $ cmake -DCMAKE_TOOLCHAIN_FILE=../aarch64-linux-gcc.cmake ..
+    $ make -j
 
 ### option
 `-DCMAKE_BUILD_TYPE` : possible values are empty, Debug, Release, RelWithDebInfo and MinSizeRel, default is `Release`.  
