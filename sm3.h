@@ -56,9 +56,9 @@ extern "C" {
 #endif
 
 typedef struct {
-    u8 buf[SM3_BLOCK_SIZE];
-    u32 digest[8];
-    size_t bits;
+    u8 buf[SM3_BLOCK_SIZE];  // hold last few bytes that have not been processed
+    u32 digest[8];           // ...
+    size_t bits;             // number of bits compressed
 } SM3_CTX;
 
 PIGGY_EXPORT const char* sm3_get_impl_name();

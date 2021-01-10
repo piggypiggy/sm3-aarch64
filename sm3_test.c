@@ -25,6 +25,7 @@ typedef struct {
     char *hash;
 } SM3_TEST_VECTOR;
 
+/* you can add more test vectors here :) */
 static SM3_TEST_VECTOR sm3_test_vec[] =
 {
     /* 1 */

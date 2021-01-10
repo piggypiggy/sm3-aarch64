@@ -96,26 +96,30 @@ int sm3_update(SM3_CTX *ctx, const u8* data, size_t datalen)
 {
     size_t n, left;
 
+    /* number of bytes in ctx->buf */
     n = (ctx->bits >> 3) & 0x3fU;
-    ctx->bits += (datalen << 3);
 
+    ctx->bits += (datalen << 3);
     left = SM3_BLOCK_SIZE - n;
     if (datalen < left) {
         memcpy(ctx->buf + n, data, datalen);
         return SM3_OK;
     } else {
+        /* concatenate ctx->buf and data to make up one block */
         memcpy(ctx->buf + n, data, left);
         sm3_compress_neon(ctx->digest, ctx->buf, 1);
         data += left;
         datalen -= left;
     }
 
+    /* compress the remaining data */
     n = (datalen >> 6);
     sm3_compress_neon(ctx->digest, data, n);
 
     data += (SM3_BLOCK_SIZE*n);
     datalen &= 0x3fU;
 
+    /* coppy the last few bytes to ctx->buf */
     memcpy(ctx->buf, data, datalen);
     return SM3_OK;
 }
@@ -128,7 +132,10 @@ int sm3_final(u8 *digest, SM3_CTX *ctx)
     u32 tdigest[8];
     u32 *pdigest;
 
+    /* number of bytes in ctx->buf */
     n = (ctx->bits >> 3) & 0x3fU;
+    
+    /* copy ctx */
     memcpy(tbuf, ctx->buf, n);
     tdigest[0] = ctx->digest[0];
     tdigest[1] = ctx->digest[1];
@@ -150,6 +157,8 @@ int sm3_final(u8 *digest, SM3_CTX *ctx)
 
     *(u64*)(&tbuf[56]) = to_be64(ctx->bits);
     sm3_compress_neon(tdigest, tbuf, 1);
+
+    /* big endian */
     for (i = 0; i < 8; i++)
         pdigest[i] = to_be32(tdigest[i]);
 
