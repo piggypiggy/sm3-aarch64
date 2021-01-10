@@ -17,6 +17,7 @@
 ##############################################################################
 
 $flavour = shift;
+$endianess = shift;
 $output  = shift;
 
 $0 =~ m/(.*[\/\\])[^\/\\]+$/; $dir=$1;
@@ -546,13 +547,17 @@ sm3_compress_neon:
     subs $nb,$nb,#1
     blo .done_hash
     ld1 {$M0.16b,$M1.16b,$M2.16b,$M3.16b},[$block],#64
-    // byte order
-     adr $TBL,.LK256
+___
+# byte order
+$code.=<<___ if ($endianess == 1);
     rev32 $M0.16b,$M0.16b
     rev32 $M1.16b,$M1.16b
-     stp $block,$nb,[sp,#8]
     rev32 $M2.16b,$M2.16b
     rev32 $M3.16b,$M3.16b
+___
+$code.=<<___;
+    adr $TBL,.LK256
+    stp $block,$nb,[sp,#8]
 ___
 
 # first 16 rounds

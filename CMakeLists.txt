@@ -81,7 +81,7 @@ set(SM3_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 set(OUTPUT_DIRECTORY ${SM3_DIR}/bin)
 
 add_custom_command(OUTPUT ${SM3_DIR}/sm3-aarch64.s
-                   COMMAND ${PERL} ${SM3_DIR}/sm3-aarch64.pl linux64 ${SM3_DIR}/sm3-aarch64.s
+                   COMMAND ${PERL} ${SM3_DIR}/sm3-aarch64.pl linux64 ${ORDER} ${SM3_DIR}/sm3-aarch64.s
                    DEPENDS ${SM3_DIR}/sm3-aarch64.pl
 )
 
