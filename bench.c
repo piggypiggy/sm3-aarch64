@@ -84,8 +84,8 @@ static void _run_bench(int64_t N)
     avg_speed_MB = (N * MSGLEN) / usec;
     avg_speed_Gb = 8 * avg_speed_MB / 1000;
     printf("cycles/block : %ld \n", (int64_t)(TICKS() / (N * MSGLEN / 64)));
-    printf("数据块大小(B) \t  总时间(ms)  \t  平均速度(MB/s)  \t 平均速度(Gb/s) \n");
-    printf("   %d      \t  %.4f  \t    %.4f     \t   %.4f \n\n", MSGLEN, usec/1000, avg_speed_MB, avg_speed_Gb);
+    printf("总时间(ms)  \t  平均速度(MB/s)  \t 平均速度(Gb/s) \n");
+    printf("%.4f  \t    %.4f       \t   %.4f \n\n", usec/1000, avg_speed_MB, avg_speed_Gb);
 }
 
 static void run_bench(char *name, int64_t N)
