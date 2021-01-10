@@ -63,10 +63,12 @@ static inline u64 to_be64(u64 in)
 static inline void clean(u8 *p, size_t plen)
 {
     size_t i;
+    volatile u8 *pp;
 
     i = 0;
+    pp = (volatile u8*)p;
     while (i < plen)
-        p[i++] = 0;
+        pp[i++] = 0;
 }
 
 const char* sm3_get_impl_name()
