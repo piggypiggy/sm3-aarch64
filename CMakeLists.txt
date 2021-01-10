@@ -134,7 +134,7 @@ if(BUILD_SHARED)
 endif()
 
 # install headers
-# INSTALL(DIRECTORY ${SM3_INCLUDE_DIR}/gmlite DESTINATION include)
+INSTALL(FILES ${SM3_DIR}/sm3.h DESTINATION include)
 
 ################# BUILD BENCH #################
 project(sm3_bench LANGUAGES C)
