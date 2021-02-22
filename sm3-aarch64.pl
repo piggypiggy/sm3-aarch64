@@ -36,8 +36,8 @@ my ($W)=("w19");
 my ($V0,$V1,$V2,$V3,$V4,$V5,$V6,$V7)=map("w$_",(20..27));
 my ($t0,$t1,$t2,$t3,$t4,$t5)=map("w$_",(12..17));
 my ($T0,$T1,$T2,$T3,$T4)=("w0","w1","w2","w28","w30");
-my ($XTMP0,$XTMP1,$XTMP2,$XTMP3,$XTMP4,$XTMP5)=map("v$_",(4..9));
-my ($XFER)=("v10");
+my ($XTMP0,$XTMP1,$XTMP2,$XTMP3,$XTMP4,$XTMP5)=map("v$_",(4..7),16,17);
+my ($XFER)=("v18");
 
 $code.=<<___;
 .text
